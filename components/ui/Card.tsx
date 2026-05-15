@@ -1,52 +1,46 @@
-import { View, Pressable, ViewProps } from 'react-native';
+import { View, Pressable, ViewProps, ViewStyle } from 'react-native';
 import { ReactNode } from 'react';
 
 interface CardProps extends ViewProps {
   children: ReactNode;
   onPress?: () => void;
-  className?: string;
   variant?: 'white' | 'tinted' | 'outline' | 'clear';
   tintColor?: string;
   noPadding?: boolean;
+  // className kept for backwards compat but ignored
+  className?: string;
 }
 
+const VARIANT_STYLE: Record<string, { backgroundColor: string; borderColor: string }> = {
+  white:   { backgroundColor: '#ffffff',     borderColor: '#e5e3df' },
+  tinted:  { backgroundColor: 'transparent', borderColor: 'transparent' },
+  outline: { backgroundColor: 'transparent', borderColor: '#e5e3df' },
+  clear:   { backgroundColor: 'transparent', borderColor: 'transparent' },
+};
+
 export const Card = ({
-  children,
-  onPress,
-  className = '',
-  variant = 'white',
-  tintColor,
+  children, onPress,
+  variant = 'white', tintColor,
   noPadding = false,
+  style,
   ...props
 }: CardProps) => {
   const Container = onPress ? Pressable : View;
-
-  const getVariantStyles = () => {
-    switch (variant) {
-      case 'white':
-        return 'bg-white border-[#e5e3df]';
-      case 'tinted':
-        return 'border-transparent';
-      case 'outline':
-        return 'bg-transparent border-[#e5e3df]';
-      case 'clear':
-        return 'bg-transparent border-transparent';
-      default:
-        return 'bg-white border-[#e5e3df]';
-    }
-  };
+  const variantStyle = VARIANT_STYLE[variant];
 
   return (
     <Container
-      onPress={onPress}
-      className={`rounded-2xl border overflow-hidden ${getVariantStyles()} ${className}`}
-      style={[
-        variant === 'tinted' && tintColor ? { backgroundColor: tintColor } : {},
-        props.style
-      ]}
+      onPress={onPress as any}
+      style={[{
+        borderRadius: 16,
+        borderWidth: 1,
+        overflow: 'hidden',
+        backgroundColor: variant === 'tinted' && tintColor ? tintColor : variantStyle.backgroundColor,
+        borderColor: variantStyle.borderColor,
+      } as ViewStyle, style]}
       {...props}
     >
-      <View className={noPadding ? '' : 'p-4'}>
+      <View style={noPadding ? undefined : { padding: 16 }}>
         {children}
       </View>
     </Container>

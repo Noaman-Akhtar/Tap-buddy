@@ -125,19 +125,19 @@ export default function OnboardingScreen() {
                 title="Skip"
                 variant="ghost"
                 onPress={finish}
-                className="flex-1"
+                style={{ flex: 1 }}
               />
               <Button
                 title="Next"
                 onPress={handleNext}
-                className="flex-[2]"
+                style={{ flex: 2 }}
               />
             </>
           ) : (
             <Button
               title="Get Started"
               onPress={finish}
-              className="flex-1"
+              style={{ flex: 1 }}
             />
           )}
         </View>

@@ -14,42 +14,43 @@ export default function LoginScreen() {
 
   const handleLogin = () => {
     if (phone.length < 10) return;
-    
     setLoading(true);
-    // Simulate API call
     setTimeout(() => {
       setLoading(false);
-      login({ name: 'Aman', phone, grade: '10' });
+      login({ name: 'Aman', phone, grade: '10', streak: 12, accessRate: 85, submissionRate: 60 });
       router.replace('/(tabs)');
     }, 1500);
   };
 
   return (
-    <SafeAreaView className="flex-1 bg-[#f5f1ec]">
-      <KeyboardAvoidingView 
+    <SafeAreaView style={{ flex: 1, backgroundColor: '#f5f1ec' }}>
+      <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        className="flex-1"
+        style={{ flex: 1 }}
       >
         <ScrollView contentContainerStyle={{ flexGrow: 1, padding: 24, justifyContent: 'center' }}>
-          <View className="items-center mb-10">
-            <View className="w-20 h-20 rounded-full bg-[#2ead4b] items-center justify-center mb-6">
+          {/* Logo & title */}
+          <View style={{ alignItems: 'center', marginBottom: 40 }}>
+            <View style={{ width: 80, height: 80, borderRadius: 40, backgroundColor: '#2ead4b', alignItems: 'center', justifyContent: 'center', marginBottom: 24 }}>
               <Ionicons name="school" size={40} color="white" />
             </View>
-            <Text className="text-[32px] font-bold text-[#1a1a1a] tracking-tight text-center">
+            <Text style={{ fontSize: 32, fontWeight: '700', color: '#1a1a1a', textAlign: 'center', letterSpacing: -0.5 }}>
               Welcome Back
             </Text>
-            <Text className="text-[16px] text-[#787671] mt-2 text-center">
+            <Text style={{ fontSize: 16, color: '#787671', marginTop: 8, textAlign: 'center' }}>
               Enter your phone number to continue your learning journey
             </Text>
           </View>
 
-          <View className="bg-white rounded-2xl border border-[#e5e3df] p-6 mb-6">
-            <Text className="text-[14px] font-semibold text-[#5d5b54] mb-2">Phone Number</Text>
-            <View className="flex-row items-center border border-[#e5e3df] rounded-xl px-4 bg-[#fafaf9]">
-              <Text className="text-[16px] text-[#1a1a1a] font-medium mr-2">+91</Text>
+          {/* Phone input card */}
+          <View style={{ backgroundColor: 'white', borderRadius: 16, borderWidth: 1, borderColor: '#e5e3df', padding: 24, marginBottom: 24 }}>
+            <Text style={{ fontSize: 14, fontWeight: '600', color: '#5d5b54', marginBottom: 8 }}>Phone Number</Text>
+            <View style={{ flexDirection: 'row', alignItems: 'center', borderWidth: 1, borderColor: '#e5e3df', borderRadius: 12, paddingHorizontal: 16, backgroundColor: '#fafaf9' }}>
+              <Text style={{ fontSize: 16, color: '#1a1a1a', fontWeight: '500', marginRight: 8 }}>+91</Text>
               <TextInput
-                className="flex-1 py-4 text-[16px] text-[#1a1a1a]"
+                style={{ flex: 1, paddingVertical: 16, fontSize: 16, color: '#1a1a1a' }}
                 placeholder="00000 00000"
+                placeholderTextColor="#a4a097"
                 keyboardType="phone-pad"
                 maxLength={10}
                 value={phone}
@@ -58,18 +59,18 @@ export default function LoginScreen() {
             </View>
           </View>
 
-          <Button 
-            title="Login" 
+          <Button
+            title="Login"
             onPress={handleLogin}
             loading={loading}
             disabled={phone.length < 10}
             size="lg"
           />
 
-          <View className="mt-8">
-            <Text className="text-[14px] text-[#787671] text-center">
+          <View style={{ marginTop: 32 }}>
+            <Text style={{ fontSize: 14, color: '#787671', textAlign: 'center' }}>
               Don't have an account?{' '}
-              <Text className="text-[#2ead4b] font-semibold">Contact your teacher</Text>
+              <Text style={{ color: '#2ead4b', fontWeight: '600' }}>Contact your teacher</Text>
             </Text>
           </View>
         </ScrollView>
