@@ -3,9 +3,10 @@ import {
   FlatList, KeyboardAvoidingView, Platform
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { MockData } from '@/constants/MockData';
+import { Card } from '@/components/ui/Card';
 
 type Message = { id: string; role: string; content: string; time: string };
 
@@ -17,6 +18,40 @@ const BOT_RESPONSES = [
   "Keep going - you're doing amazing! Consistent practice is the key. Every small step counts!",
 ];
 
+const ChatBubble = ({ item }: { item: Message }) => {
+  const isUser = item.role === 'user';
+  return (
+    <View className={`flex-row mb-4 items-end ${isUser ? 'justify-end' : 'justify-start'}`}>
+      {!isUser && (
+        <View className="w-8 h-8 rounded-full bg-[#2ead4b] items-center justify-center mr-2 mb-0.5">
+          <Ionicons name="sparkles" size={14} color="white" />
+        </View>
+      )}
+      <View
+        style={{
+          maxWidth: isUser ? '80%' : '85%',
+          backgroundColor: isUser ? '#2ead4b' : '#ffffff',
+          borderWidth: isUser ? 0 : 1,
+          borderColor: '#e5e3df',
+          paddingHorizontal: 16, paddingVertical: 12,
+          borderTopLeftRadius: 16, borderTopRightRadius: 16,
+          borderBottomLeftRadius: isUser ? 16 : 4,
+          borderBottomRightRadius: isUser ? 4 : 16,
+        }}
+      >
+        <Text className={`text-[15px] leading-6 ${isUser ? 'text-white' : 'text-[#1a1a1a]'}`}>
+          {item.content}
+        </Text>
+        <Text
+          className={`text-[11px] mt-1.5 ${isUser ? 'text-white/50 text-right' : 'text-[#787671]'}`}
+        >
+          {item.time}
+        </Text>
+      </View>
+    </View>
+  );
+};
+
 export default function ChatScreen() {
   const [messages, setMessages] = useState<Message[]>(MockData.chatMessages);
   const [inputText, setInputText] = useState('');
@@ -27,59 +62,34 @@ export default function ChatScreen() {
 
   const sendMessage = () => {
     if (!inputText.trim() || isTyping) return;
+    
     const userMsg: Message = {
-      id: Date.now().toString(), role: 'user', content: inputText.trim(),
+      id: Date.now().toString(),
+      role: 'user',
+      content: inputText.trim(),
       time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
     };
+    
     setMessages(prev => [...prev, userMsg]);
     setInputText('');
     setIsTyping(true);
+    
+    // Simulate API Query and Polling
     setTimeout(() => {
-      const botMsg: Message = {
-        id: (Date.now() + 1).toString(), role: 'bot',
-        content: BOT_RESPONSES[responseIndex.current % BOT_RESPONSES.length],
-        time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-      };
-      responseIndex.current += 1;
-      setMessages(prev => [...prev, botMsg]);
-      setIsTyping(false);
-      setTimeout(() => flatListRef.current?.scrollToEnd({ animated: true }), 100);
-    }, 1800);
-  };
-
-  const renderMessage = ({ item }: { item: Message }) => {
-    const isUser = item.role === 'user';
-    return (
-      <View className={`flex-row mb-4 items-end ${isUser ? 'justify-end' : 'justify-start'}`}>
-        {!isUser && (
-          <View className="w-8 h-8 rounded-full bg-[#2ead4b] items-center justify-center mr-2 mb-0.5">
-            <Ionicons name="sparkles" size={14} color="white" />
-          </View>
-        )}
-        {/* Bubble - asymmetric radii via style prop */}
-        <View
-          style={{
-            maxWidth: isUser ? '80%' : '85%',
-            backgroundColor: isUser ? '#2ead4b' : '#ffffff',
-            borderWidth: isUser ? 0 : 1,
-            borderColor: '#e5e3df',
-            paddingHorizontal: 16, paddingVertical: 12,
-            borderTopLeftRadius: 16, borderTopRightRadius: 16,
-            borderBottomLeftRadius: isUser ? 16 : 4,
-            borderBottomRightRadius: isUser ? 4 : 16,
-          }}
-        >
-          <Text className={`text-[15px] leading-6 ${isUser ? 'text-white' : 'text-[#1a1a1a]'}`}>
-            {item.content}
-          </Text>
-          <Text
-            className={`text-[11px] mt-1.5 ${isUser ? 'text-white/50 text-right' : 'text-[#787671]'}`}
-          >
-            {item.time}
-          </Text>
-        </View>
-      </View>
-    );
+      // 1. Send Query (simulated)
+      // 2. Poll Result (simulated)
+      setTimeout(() => {
+        const botMsg: Message = {
+          id: (Date.now() + 1).toString(),
+          role: 'bot',
+          content: BOT_RESPONSES[responseIndex.current % BOT_RESPONSES.length],
+          time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+        };
+        responseIndex.current += 1;
+        setMessages(prev => [...prev, botMsg]);
+        setIsTyping(false);
+      }, 1500);
+    }, 500);
   };
 
   return (
@@ -87,8 +97,9 @@ export default function ChatScreen() {
       <KeyboardAvoidingView
         style={{ flex: 1 }}
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+        keyboardVerticalOffset={Platform.OS === 'ios' ? 90 : 0}
       >
-        {/* Header - dynamic top inset padding for transparent status bars */}
+        {/* Header */}
         <View
           style={{ paddingTop: Math.max(insets.top + 10, 42) }}
           className="flex-row items-center px-4 pb-3 bg-white border-b border-[#ede9e4]"
@@ -103,9 +114,6 @@ export default function ChatScreen() {
             </View>
             <Text className="text-[12px] text-[#787671]">AI Learning Tutor</Text>
           </View>
-          <Pressable className="w-10 h-10 items-center justify-center">
-            <Ionicons name="ellipsis-vertical" size={18} color="#787671" />
-          </Pressable>
         </View>
 
         {/* Messages */}
@@ -113,8 +121,8 @@ export default function ChatScreen() {
           ref={flatListRef}
           data={messages}
           keyExtractor={item => item.id}
-          renderItem={renderMessage}
-          style={{ flex: 1, backgroundColor: '#f5f1ec' }}
+          renderItem={({ item }) => <ChatBubble item={item} />}
+          style={{ flex: 1 }}
           contentContainerStyle={{ paddingHorizontal: 16, paddingVertical: 16 }}
           onContentSizeChange={() => flatListRef.current?.scrollToEnd({ animated: true })}
           ListFooterComponent={
@@ -132,9 +140,9 @@ export default function ChatScreen() {
                   }}
                 >
                   <View className="flex-row gap-1">
-                    <View className="w-2 h-2 rounded-full bg-[#787671]" />
-                    <View className="w-2 h-2 rounded-full bg-[#a4a097]" />
-                    <View className="w-2 h-2 rounded-full bg-[#e5e3df]" />
+                    <View className="w-2 h-2 rounded-full bg-[#2ead4b]/40" />
+                    <View className="w-2 h-2 rounded-full bg-[#2ead4b]/60" />
+                    <View className="w-2 h-2 rounded-full bg-[#2ead4b]" />
                   </View>
                 </View>
               </View>
@@ -142,8 +150,8 @@ export default function ChatScreen() {
           }
         />
 
-        {/* Input */}
-        <View className="bg-white border-t border-[#ede9e4] px-4 py-2.5">
+        {/* Input bar */}
+        <View className="bg-white border-t border-[#ede9e4] px-4 py-2.5 pb-6">
           <View className="flex-row items-end bg-white rounded-full border border-[#e5e3df] px-4 min-h-[48px]">
             <TextInput
               className="flex-1 text-[15px] text-[#1a1a1a] py-3 max-h-24"
@@ -169,3 +177,4 @@ export default function ChatScreen() {
     </View>
   );
 }
+
