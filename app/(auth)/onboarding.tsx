@@ -56,8 +56,9 @@ export default function OnboardingScreen() {
   };
 
   return (
-    <SafeAreaView className="flex-1 bg-[#f5f1ec]">
-      <View className="flex-1">
+    <SafeAreaView style={{ flex: 1, backgroundColor: '#f5f1ec' }}>
+      {/* Slide area — explicit flex: 1 so it fills space above the footer */}
+      <View style={{ flex: 1 }}>
         <ScrollView
           ref={scrollRef}
           horizontal
@@ -68,19 +69,30 @@ export default function OnboardingScreen() {
             setActiveIndex(index);
           }}
           scrollEventThrottle={16}
+          style={{ flex: 1 }}
+          contentContainerStyle={{ alignItems: 'stretch' }}
         >
           {SLIDES.map((slide) => (
-            <View key={slide.id} style={{ width }} className="flex-1 items-center justify-center px-10">
-              <View 
-                className="w-48 h-48 rounded-full items-center justify-center mb-10"
-                style={{ backgroundColor: slide.color }}
+            <View
+              key={slide.id}
+              style={{ width, flex: 1, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 40 }}
+            >
+              <View
+                style={{
+                  width: 192, height: 192,
+                  borderRadius: 96,
+                  backgroundColor: slide.color,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  marginBottom: 40,
+                }}
               >
                 <Ionicons name={slide.icon as any} size={80} color={slide.iconColor} />
               </View>
-              <Text className="text-[28px] font-bold text-[#1a1a1a] text-center mb-4 tracking-tight">
+              <Text style={{ fontSize: 28, fontWeight: '700', color: '#1a1a1a', textAlign: 'center', marginBottom: 16, letterSpacing: -0.5 }}>
                 {slide.title}
               </Text>
-              <Text className="text-[16px] text-[#787671] text-center leading-6">
+              <Text style={{ fontSize: 16, color: '#787671', textAlign: 'center', lineHeight: 24 }}>
                 {slide.description}
               </Text>
             </View>
@@ -88,35 +100,42 @@ export default function OnboardingScreen() {
         </ScrollView>
       </View>
 
-      {/* Footer */}
-      <View className="px-6 pb-10">
-        <View className="flex-row justify-center mb-8 gap-2">
+      {/* Footer — fixed at bottom */}
+      <View style={{ paddingHorizontal: 24, paddingBottom: 40 }}>
+        {/* Dots */}
+        <View style={{ flexDirection: 'row', justifyContent: 'center', marginBottom: 32, gap: 8 }}>
           {SLIDES.map((_, i) => (
-            <View 
-              key={i} 
-              className={`h-2 rounded-full ${i === activeIndex ? 'w-8 bg-[#2ead4b]' : 'w-2 bg-[#e5e3df]'}`} 
+            <View
+              key={i}
+              style={{
+                height: 8,
+                borderRadius: 4,
+                width: i === activeIndex ? 32 : 8,
+                backgroundColor: i === activeIndex ? '#2ead4b' : '#e5e3df',
+              }}
             />
           ))}
         </View>
 
-        <View className="flex-row gap-4">
+        {/* Buttons */}
+        <View style={{ flexDirection: 'row', gap: 16 }}>
           {activeIndex < SLIDES.length - 1 ? (
             <>
-              <Button 
-                title="Skip" 
-                variant="ghost" 
+              <Button
+                title="Skip"
+                variant="ghost"
                 onPress={finish}
                 className="flex-1"
               />
-              <Button 
-                title="Next" 
+              <Button
+                title="Next"
                 onPress={handleNext}
                 className="flex-[2]"
               />
             </>
           ) : (
-            <Button 
-              title="Get Started" 
+            <Button
+              title="Get Started"
               onPress={finish}
               className="flex-1"
             />
