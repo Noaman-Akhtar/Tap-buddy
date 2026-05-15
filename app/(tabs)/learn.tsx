@@ -92,7 +92,34 @@ export default function LearnScreen() {
             </View>
           </Card>
         ))}
+
+        {/* DIKSHA Integration Section */}
+        <View className="mt-8 mb-4">
+          <View className="flex-row items-center mb-4">
+            <View className="w-10 h-10 rounded-full bg-[#0075de] items-center justify-center mr-3">
+              <Ionicons name="globe-outline" size={20} color="white" />
+            </View>
+            <View>
+              <Text className="text-[18px] font-bold text-[#1a1a1a]">DIKSHA Explorer</Text>
+              <Text className="text-[13px] text-[#787671]">Government educational content</Text>
+            </View>
+          </View>
+          
+          <Card variant="outline" className="p-0 overflow-hidden">
+             <Pressable className="p-4 flex-row items-center">
+               <View className="w-12 h-12 rounded-xl bg-blue-50 items-center justify-center mr-4">
+                 <Ionicons name="book-outline" size={24} color="#0075de" />
+               </View>
+               <View className="flex-1">
+                 <Text className="text-[15px] font-bold text-[#1a1a1a]">State Board Curriculum</Text>
+                 <Text className="text-[12px] text-[#787671]">Grade {10} Lessons</Text>
+               </View>
+               <Ionicons name="arrow-forward" size={20} color="#0075de" />
+             </Pressable>
+          </Card>
+        </View>
       </ScrollView>
+
     </View>
   );
 }
